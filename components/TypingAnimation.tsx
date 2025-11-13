@@ -25,32 +25,40 @@ export default function TypingAnimation({
   useEffect(() => {
     const currentFullText = texts[currentTextIndex];
 
-    const timer = setTimeout(() => {
-      if (isPaused) {
-        setIsPaused(false);
-        setIsDeleting(true);
-        return;
-      }
+    const timer = setTimeout(
+      () => {
+        if (isPaused) {
+          setIsPaused(false);
+          setIsDeleting(true);
 
-      if (isDeleting) {
-        // Deleting characters
-        if (currentText.length > 0) {
-          setCurrentText(currentFullText.substring(0, currentText.length - 1));
-        } else {
-          // Move to next text
-          setIsDeleting(false);
-          setCurrentTextIndex((prev) => (prev + 1) % texts.length);
+          return;
         }
-      } else {
-        // Typing characters
-        if (currentText.length < currentFullText.length) {
-          setCurrentText(currentFullText.substring(0, currentText.length + 1));
+
+        if (isDeleting) {
+          // Deleting characters
+          if (currentText.length > 0) {
+            setCurrentText(
+              currentFullText.substring(0, currentText.length - 1),
+            );
+          } else {
+            // Move to next text
+            setIsDeleting(false);
+            setCurrentTextIndex((prev) => (prev + 1) % texts.length);
+          }
         } else {
-          // Pause before deleting
-          setIsPaused(true);
+          // Typing characters
+          if (currentText.length < currentFullText.length) {
+            setCurrentText(
+              currentFullText.substring(0, currentText.length + 1),
+            );
+          } else {
+            // Pause before deleting
+            setIsPaused(true);
+          }
         }
-      }
-    }, isPaused ? pauseDuration : isDeleting ? deletingSpeed : typingSpeed);
+      },
+      isPaused ? pauseDuration : isDeleting ? deletingSpeed : typingSpeed,
+    );
 
     return () => clearTimeout(timer);
   }, [

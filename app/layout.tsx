@@ -33,7 +33,9 @@ export default function RootLayout({
 }) {
   return (
     <html suppressHydrationWarning lang="en">
-      <head />
+      <head>
+        <script defer src="https://analytics.hanjanpochaok.com/script.js" data-website-id="c15a5e10-9dbc-4a25-acd2-7b18a058348d"></script>
+      </head>
       <body
         className={clsx(
           "min-h-screen bg-background font-sans antialiased",

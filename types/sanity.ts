@@ -1,4 +1,4 @@
-import { PortableTextBlock } from '@portabletext/types';
+import { PortableTextBlock } from "@portabletext/types";
 
 export interface SanityImageAsset {
   _id: string;
@@ -7,14 +7,14 @@ export interface SanityImageAsset {
 }
 
 export interface SanityImage {
-  _type: 'image';
+  _type: "image";
   asset: SanityImageAsset;
   alt?: string;
 }
 
 export interface BlogPost {
   _id: string;
-  _type: 'blogPost';
+  _type: "blogPost";
   _createdAt: string;
   _updatedAt: string;
   title: string;
@@ -33,7 +33,7 @@ export interface BlogPost {
 
 export interface Author {
   _id: string;
-  _type: 'author';
+  _type: "author";
   name: string;
   slug: {
     current: string;
@@ -44,7 +44,7 @@ export interface Author {
 
 export interface Category {
   _id: string;
-  _type: 'category';
+  _type: "category";
   title: string;
   slug: {
     current: string;

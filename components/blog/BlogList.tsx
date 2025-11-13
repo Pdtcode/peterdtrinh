@@ -1,5 +1,6 @@
-import { BlogPostPreview } from "@/types/sanity";
 import BlogCard from "./BlogCard";
+
+import { BlogPostPreview } from "@/types/sanity";
 
 interface BlogListProps {
   posts: BlogPostPreview[];

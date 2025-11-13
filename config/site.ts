@@ -9,6 +9,10 @@ export const siteConfig = {
       href: "/projects",
     },
     {
+      label: "Creative",
+      href: "/creative",
+    },
+    {
       label: "About",
       href: "/about",
     },
@@ -17,6 +21,10 @@ export const siteConfig = {
     {
       label: "Projects",
       href: "/projects",
+    },
+    {
+      label: "Creative",
+      href: "/creative",
     },
     {
       label: "About",

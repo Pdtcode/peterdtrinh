@@ -1,14 +1,15 @@
-import { Card, CardBody } from "@heroui/card";
 import { Chip } from "@heroui/chip";
 import { Link } from "@heroui/link";
 import { Button } from "@heroui/button";
 import NextLink from "next/link";
 import Image from "next/image";
 import { PortableText } from "@portabletext/react";
+import { format } from "date-fns";
+
+import BlogCard from "./BlogCard";
+
 import { BlogPost as BlogPostType, BlogPostPreview } from "@/types/sanity";
 import { urlFor } from "@/lib/sanity";
-import { format } from "date-fns";
-import BlogCard from "./BlogCard";
 
 interface BlogPostProps {
   post: BlogPostType;
@@ -20,11 +21,11 @@ const portableTextComponents = {
     image: ({ value }: any) => (
       <div className="my-8">
         <Image
-          src={urlFor(value).width(800).height(450).url()}
-          alt={value.alt || ''}
-          width={800}
-          height={450}
+          alt={value.alt || ""}
           className="rounded-lg object-cover w-full"
+          height={450}
+          src={urlFor(value).width(800).height(450).url()}
+          width={800}
         />
         {value.alt && (
           <p className="text-sm text-default-500 text-center mt-2 italic">
@@ -93,9 +94,9 @@ const portableTextComponents = {
     ),
     link: ({ children, value }: any) => (
       <Link
-        href={value.href}
         className="text-primary hover:text-primary-600 underline"
-        isExternal={value.href.startsWith('http')}
+        href={value.href}
+        isExternal={value.href.startsWith("http")}
       >
         {children}
       </Link>
@@ -104,7 +105,7 @@ const portableTextComponents = {
 };
 
 export default function BlogPost({ post, relatedPosts = [] }: BlogPostProps) {
-  const formattedDate = format(new Date(post.publishedAt), 'MMMM dd, yyyy');
+  const formattedDate = format(new Date(post.publishedAt), "MMMM dd, yyyy");
 
   return (
     <div className="max-w-4xl mx-auto space-y-8">
@@ -112,10 +113,10 @@ export default function BlogPost({ post, relatedPosts = [] }: BlogPostProps) {
       <div>
         <Button
           as={NextLink}
-          href="/blog"
-          variant="flat"
-          size="sm"
           className="mb-6"
+          href="/blog"
+          size="sm"
+          variant="flat"
         >
           ← Back to Blog
         </Button>
@@ -127,16 +128,16 @@ export default function BlogPost({ post, relatedPosts = [] }: BlogPostProps) {
           <h1 className="text-4xl md:text-5xl font-bold text-foreground leading-tight">
             {post.title}
           </h1>
-          
+
           <div className="flex flex-wrap items-center gap-4 text-default-600">
             <div className="flex items-center gap-3">
               {post.author.image && (
                 <Image
-                  src={urlFor(post.author.image).width(40).height(40).url()}
                   alt={post.author.name}
-                  width={40}
-                  height={40}
                   className="rounded-full"
+                  height={40}
+                  src={urlFor(post.author.image).width(40).height(40).url()}
+                  width={40}
                 />
               )}
               <div>
@@ -159,10 +160,10 @@ export default function BlogPost({ post, relatedPosts = [] }: BlogPostProps) {
             {post.categories?.map((category) => (
               <Chip
                 key={category._id}
+                className="hover:bg-primary hover:text-primary-foreground transition-colors cursor-pointer"
+                color="primary"
                 size="sm"
                 variant="flat"
-                color="primary"
-                className="hover:bg-primary hover:text-primary-foreground transition-colors cursor-pointer"
               >
                 {category.title}
               </Chip>
@@ -170,10 +171,10 @@ export default function BlogPost({ post, relatedPosts = [] }: BlogPostProps) {
             {post.tags?.map((tag) => (
               <Chip
                 key={tag}
+                className="hover:bg-secondary hover:text-secondary-foreground transition-colors cursor-pointer"
+                color="secondary"
                 size="sm"
                 variant="flat"
-                color="secondary"
-                className="hover:bg-secondary hover:text-secondary-foreground transition-colors cursor-pointer"
               >
                 {tag}
               </Chip>
@@ -184,11 +185,11 @@ export default function BlogPost({ post, relatedPosts = [] }: BlogPostProps) {
           {post.mainImage && (
             <div className="relative w-full aspect-video overflow-hidden rounded-lg">
               <Image
-                src={urlFor(post.mainImage).width(800).height(450).url()}
-                alt={post.mainImage.alt || post.title}
                 fill
-                className="object-cover"
                 priority
+                alt={post.mainImage.alt || post.title}
+                className="object-cover"
+                src={urlFor(post.mainImage).width(800).height(450).url()}
               />
             </div>
           )}
@@ -201,7 +202,7 @@ export default function BlogPost({ post, relatedPosts = [] }: BlogPostProps) {
 
         {/* Article Content */}
         <div className="prose prose-lg max-w-none">
-          <PortableText value={post.body} components={portableTextComponents} />
+          <PortableText components={portableTextComponents} value={post.body} />
         </div>
       </article>
 
@@ -221,12 +222,7 @@ export default function BlogPost({ post, relatedPosts = [] }: BlogPostProps) {
 
       {/* Back to Top */}
       <div className="text-center pt-8">
-        <Button
-          as={NextLink}
-          href="/blog"
-          variant="flat"
-          color="primary"
-        >
+        <Button as={NextLink} color="primary" href="/blog" variant="flat">
           ← Back to All Posts
         </Button>
       </div>

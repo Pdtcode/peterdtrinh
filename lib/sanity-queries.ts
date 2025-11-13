@@ -1,5 +1,6 @@
-import { client } from './sanity';
-import { BlogPost, BlogPostPreview, Author, Category } from '@/types/sanity';
+import { client } from "./sanity";
+
+import { BlogPost, BlogPostPreview, Category } from "@/types/sanity";
 
 // GROQ queries
 export const blogPostsQuery = `
@@ -117,7 +118,9 @@ export async function getAllBlogPosts(): Promise<BlogPostPreview[]> {
   return client.fetch(blogPostsQuery);
 }
 
-export async function getBlogPostBySlug(slug: string): Promise<BlogPost | null> {
+export async function getBlogPostBySlug(
+  slug: string,
+): Promise<BlogPost | null> {
   return client.fetch(blogPostBySlugQuery, { slug });
 }
 
@@ -125,11 +128,16 @@ export async function getAllBlogPostSlugs(): Promise<string[]> {
   return client.fetch(blogPostSlugsQuery);
 }
 
-export async function getRelatedPosts(slug: string, categories: string[]): Promise<BlogPostPreview[]> {
+export async function getRelatedPosts(
+  slug: string,
+  categories: string[],
+): Promise<BlogPostPreview[]> {
   return client.fetch(relatedPostsQuery, { slug, categories });
 }
 
-export async function getBlogPostsByCategory(categorySlug: string): Promise<BlogPostPreview[]> {
+export async function getBlogPostsByCategory(
+  categorySlug: string,
+): Promise<BlogPostPreview[]> {
   const query = `
     *[_type == "blogPost" && $categorySlug in categories[]->slug.current] | order(publishedAt desc) {
       _id,
@@ -162,6 +170,7 @@ export async function getBlogPostsByCategory(categorySlug: string): Promise<Blog
       readingTime
     }
   `;
+
   return client.fetch(query, { categorySlug });
 }
 
@@ -174,10 +183,13 @@ export async function getAllCategories(): Promise<Category[]> {
       description
     }
   `;
+
   return client.fetch(query);
 }
 
-export async function searchBlogPosts(searchTerm: string): Promise<BlogPostPreview[]> {
+export async function searchBlogPosts(
+  searchTerm: string,
+): Promise<BlogPostPreview[]> {
   const query = `
     *[_type == "blogPost" && (
       title match $searchTerm + "*" ||
@@ -214,5 +226,6 @@ export async function searchBlogPosts(searchTerm: string): Promise<BlogPostPrevi
       readingTime
     }
   `;
+
   return client.fetch(query, { searchTerm });
 }
