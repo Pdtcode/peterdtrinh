@@ -9,19 +9,18 @@ interface BlogListProps {
 export default function BlogList({ posts }: BlogListProps) {
   if (posts.length === 0) {
     return (
-      <div className="text-center py-16">
-        <h3 className="text-2xl font-semibold text-default-600 mb-4">
-          No blog posts found
-        </h3>
-        <p className="text-default-500 text-lg">
-          Check back later for new content!
+      <div className="rounded-xl border border-dashed border-line px-8 py-16 text-center">
+        <p className="eyebrow">Nothing published yet</p>
+        <p className="mx-auto mt-3 max-w-md text-sm leading-relaxed text-muted">
+          First posts are in progress. Check back soon, or subscribe to the feed
+          to get them when they land.
         </p>
       </div>
     );
   }
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+    <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
       {posts.map((post) => (
         <BlogCard key={post._id} post={post} />
       ))}

@@ -1,6 +1,4 @@
-import { Chip } from "@heroui/chip";
 import { Link } from "@heroui/link";
-import { Button } from "@heroui/button";
 import NextLink from "next/link";
 import Image from "next/image";
 import { PortableText } from "@portabletext/react";
@@ -10,6 +8,7 @@ import BlogCard from "./BlogCard";
 
 import { BlogPost as BlogPostType, BlogPostPreview } from "@/types/sanity";
 import { urlFor } from "@/lib/sanity";
+import { title, container, section, tag } from "@/components/primitives";
 
 interface BlogPostProps {
   post: BlogPostType;
@@ -19,84 +18,82 @@ interface BlogPostProps {
 const portableTextComponents = {
   types: {
     image: ({ value }: any) => (
-      <div className="my-8">
+      <figure className="my-10">
         <Image
           alt={value.alt || ""}
-          className="rounded-lg object-cover w-full"
-          height={450}
-          src={urlFor(value).width(800).height(450).url()}
-          width={800}
+          className="w-full rounded-xl border border-line object-cover"
+          height={506}
+          src={urlFor(value).width(900).height(506).url()}
+          width={900}
         />
         {value.alt && (
-          <p className="text-sm text-default-500 text-center mt-2 italic">
+          <figcaption className="mt-3 text-center font-mono text-xs text-muted">
             {value.alt}
-          </p>
+          </figcaption>
         )}
-      </div>
+      </figure>
     ),
   },
   block: {
     h1: ({ children }: any) => (
-      <h1 className="text-4xl font-bold text-foreground mb-6 mt-8 first:mt-0">
+      <h2 className="mb-5 mt-12 text-3xl font-semibold tracking-tight text-ink first:mt-0">
         {children}
-      </h1>
+      </h2>
     ),
     h2: ({ children }: any) => (
-      <h2 className="text-3xl font-semibold text-foreground mb-4 mt-8">
+      <h2 className="mb-4 mt-12 text-2xl font-semibold tracking-tight text-ink">
         {children}
       </h2>
     ),
     h3: ({ children }: any) => (
-      <h3 className="text-2xl font-semibold text-foreground mb-3 mt-6">
+      <h3 className="mb-3 mt-8 text-xl font-semibold tracking-tight text-ink">
         {children}
       </h3>
     ),
     normal: ({ children }: any) => (
-      <p className="text-default-700 mb-4 leading-relaxed text-lg">
-        {children}
-      </p>
+      <p className="mb-6 text-lg leading-relaxed text-ink/85">{children}</p>
     ),
     blockquote: ({ children }: any) => (
-      <blockquote className="border-l-4 border-primary pl-6 my-6 italic text-default-600 text-lg">
+      <blockquote className="my-8 border-l-2 border-accent pl-6 text-lg italic leading-relaxed text-muted">
         {children}
       </blockquote>
     ),
   },
   list: {
     bullet: ({ children }: any) => (
-      <ul className="list-disc list-inside mb-4 space-y-2 text-default-700 ml-4">
+      <ul className="mb-6 ml-1 list-disc space-y-2 pl-5 text-lg text-ink/85 marker:text-accent">
         {children}
       </ul>
     ),
     number: ({ children }: any) => (
-      <ol className="list-decimal list-inside mb-4 space-y-2 text-default-700 ml-4">
+      <ol className="mb-6 ml-1 list-decimal space-y-2 pl-5 text-lg text-ink/85 marker:text-muted">
         {children}
       </ol>
     ),
   },
   listItem: {
     bullet: ({ children }: any) => (
-      <li className="text-default-700 text-lg">{children}</li>
+      <li className="leading-relaxed">{children}</li>
     ),
     number: ({ children }: any) => (
-      <li className="text-default-700 text-lg">{children}</li>
+      <li className="leading-relaxed">{children}</li>
     ),
   },
   marks: {
     strong: ({ children }: any) => (
-      <strong className="font-semibold text-foreground">{children}</strong>
+      <strong className="font-semibold text-ink">{children}</strong>
     ),
     em: ({ children }: any) => <em className="italic">{children}</em>,
     code: ({ children }: any) => (
-      <code className="bg-default-100 px-2 py-1 rounded text-sm font-mono text-primary">
+      <code className="rounded border border-line bg-surface px-1.5 py-0.5 font-mono text-[0.9em] text-accent">
         {children}
       </code>
     ),
     link: ({ children, value }: any) => (
       <Link
-        className="text-primary hover:text-primary-600 underline"
+        className="text-accent underline underline-offset-4 hover:opacity-80"
         href={value.href}
-        isExternal={value.href.startsWith("http")}
+        isExternal={value.href?.startsWith("http")}
       >
         {children}
       </Link>
@@ -105,114 +102,104 @@ const portableTextComponents = {
 };
 
 export default function BlogPost({ post, relatedPosts = [] }: BlogPostProps) {
-  const formattedDate = format(new Date(post.publishedAt), "MMMM dd, yyyy");
+  const formattedDate = format(new Date(post.publishedAt), "MMMM d, yyyy");
 
   return (
-    <div className="max-w-4xl mx-auto space-y-8">
-      {/* Back to Blog */}
-      <div>
-        <Button
-          as={NextLink}
-          className="mb-6"
-          href="/blog"
-          size="sm"
-          variant="flat"
+    <>
+      <article>
+        <header
+          className={container({ width: "narrow", class: "pt-12 sm:pt-16" })}
         >
-          ← Back to Blog
-        </Button>
-      </div>
+          <NextLink
+            className="font-mono text-xs uppercase tracking-label text-muted transition-colors hover:text-accent"
+            href="/blog"
+          >
+            ← All writing
+          </NextLink>
 
-      {/* Article Header */}
-      <article className="space-y-8">
-        <header className="space-y-6">
-          <h1 className="text-4xl md:text-5xl font-bold text-foreground leading-tight">
+          <h1
+            className={title({
+              size: "lg",
+              class: "mt-8 leading-[1.1]",
+            })}
+          >
             {post.title}
           </h1>
 
-          <div className="flex flex-wrap items-center gap-4 text-default-600">
-            <div className="flex items-center gap-3">
-              {post.author.image && (
-                <Image
-                  alt={post.author.name}
-                  className="rounded-full"
-                  height={40}
-                  src={urlFor(post.author.image).width(40).height(40).url()}
-                  width={40}
-                />
-              )}
-              <div>
-                <p className="font-medium">{post.author.name}</p>
-              </div>
-            </div>
-            <div className="flex items-center gap-4 text-sm">
-              <span>{formattedDate}</span>
-              {post.readingTime && (
-                <>
-                  <span>•</span>
-                  <span>{post.readingTime} min read</span>
-                </>
-              )}
-            </div>
+          <div className="mt-6 flex flex-wrap items-center gap-x-3 gap-y-2 font-mono text-xs uppercase tracking-label text-muted">
+            {post.author?.image && (
+              <Image
+                alt=""
+                className="rounded-full"
+                height={24}
+                src={urlFor(post.author.image).width(48).height(48).url()}
+                width={24}
+              />
+            )}
+            {post.author?.name && <span>{post.author.name}</span>}
+            <span aria-hidden="true">·</span>
+            <time dateTime={post.publishedAt}>{formattedDate}</time>
+            {post.readingTime && (
+              <>
+                <span aria-hidden="true">·</span>
+                <span>{post.readingTime} min read</span>
+              </>
+            )}
           </div>
 
-          {/* Categories and Tags */}
-          <div className="flex flex-wrap gap-2">
-            {post.categories?.map((category) => (
-              <Chip
-                key={category._id}
-                className="hover:bg-primary hover:text-primary-foreground transition-colors cursor-pointer"
-                color="primary"
-                size="sm"
-                variant="flat"
-              >
-                {category.title}
-              </Chip>
-            ))}
-            {post.tags?.map((tag) => (
-              <Chip
-                key={tag}
-                className="hover:bg-secondary hover:text-secondary-foreground transition-colors cursor-pointer"
-                color="secondary"
-                size="sm"
-                variant="flat"
-              >
-                {tag}
-              </Chip>
-            ))}
-          </div>
+          {post.excerpt && (
+            <p className="mt-8 border-l-2 border-accent pl-5 text-xl leading-relaxed text-muted">
+              {post.excerpt}
+            </p>
+          )}
 
-          {/* Featured Image */}
-          {post.mainImage && (
-            <div className="relative w-full aspect-video overflow-hidden rounded-lg">
+          {(post.categories?.length || post.tags?.length) && (
+            <div className="mt-8 flex flex-wrap gap-2">
+              {post.categories?.map((category) => (
+                <span key={category._id} className={tag()}>
+                  {category.title}
+                </span>
+              ))}
+              {post.tags?.map((t) => (
+                <span key={t} className={tag()}>
+                  {t}
+                </span>
+              ))}
+            </div>
+          )}
+        </header>
+
+        {post.mainImage && (
+          <div className={container({ width: "default", class: "mt-12" })}>
+            <div className="relative aspect-[16/9] overflow-hidden rounded-xl border border-line bg-paper">
               <Image
                 fill
                 priority
                 alt={post.mainImage.alt || post.title}
                 className="object-cover"
-                src={urlFor(post.mainImage).width(800).height(450).url()}
+                sizes="(max-width: 1024px) 100vw, 1024px"
+                src={urlFor(post.mainImage).width(1600).height(900).url()}
               />
             </div>
-          )}
+          </div>
+        )}
 
-          {/* Excerpt */}
-          <p className="text-xl text-default-600 leading-relaxed font-medium">
-            {post.excerpt}
-          </p>
-        </header>
-
-        {/* Article Content */}
-        <div className="prose prose-lg max-w-none">
+        <div className={container({ width: "narrow", class: "pt-12 pb-16" })}>
           <PortableText components={portableTextComponents} value={post.body} />
         </div>
       </article>
 
-      {/* Related Posts */}
       {relatedPosts.length > 0 && (
-        <section className="mt-16 pt-8 border-t border-default-200">
-          <h2 className="text-2xl font-bold text-foreground mb-8">
-            Related Articles
+        <section className={container({ width: "wide", class: section() })}>
+          <h2
+            className={title({
+              size: "sm",
+              class: "border-b border-line pb-4",
+            })}
+          >
+            Related reading
           </h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="mt-10 grid gap-8 md:grid-cols-2 lg:grid-cols-3">
             {relatedPosts.map((relatedPost) => (
               <BlogCard key={relatedPost._id} post={relatedPost} />
             ))}
@@ -220,12 +207,16 @@ export default function BlogPost({ post, relatedPosts = [] }: BlogPostProps) {
         </section>
       )}
 
-      {/* Back to Top */}
-      <div className="text-center pt-8">
-        <Button as={NextLink} color="primary" href="/blog" variant="flat">
-          ← Back to All Posts
-        </Button>
+      <div
+        className={container({ width: "narrow", class: "pb-24 text-center" })}
+      >
+        <NextLink
+          className="inline-block rounded-full border border-line px-6 py-3 font-mono text-xs uppercase tracking-label text-ink transition-colors hover:border-accent hover:text-accent"
+          href="/blog"
+        >
+          ← Back to all posts
+        </NextLink>
       </div>
-    </div>
+    </>
   );
 }

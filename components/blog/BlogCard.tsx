@@ -1,109 +1,74 @@
-import { Card, CardBody, CardFooter, CardHeader } from "@heroui/card";
-import { Chip } from "@heroui/chip";
-import { Link } from "@heroui/link";
 import NextLink from "next/link";
 import Image from "next/image";
 import { format } from "date-fns";
 
 import { BlogPostPreview } from "@/types/sanity";
 import { urlFor } from "@/lib/sanity";
+import { card, tag } from "@/components/primitives";
 
 interface BlogCardProps {
   post: BlogPostPreview;
 }
 
 export default function BlogCard({ post }: BlogCardProps) {
-  const formattedDate = format(new Date(post.publishedAt), "MMM dd, yyyy");
+  const href = `/blog/${post.slug.current}`;
+  const formattedDate = format(new Date(post.publishedAt), "MMM d, yyyy");
 
   return (
-    <Card className="h-full hover:shadow-lg transition-shadow duration-300">
+    <article className={card({ interactive: true, class: "flex flex-col" })}>
       {post.mainImage && (
-        <CardHeader className="p-0">
-          <div className="relative w-full aspect-video overflow-hidden rounded-t-lg">
+        <NextLink className="block" href={href} tabIndex={-1}>
+          <div className="relative aspect-[16/10] overflow-hidden border-b border-line bg-paper">
             <Image
               fill
               alt={post.mainImage.alt || post.title}
-              className="object-cover hover:scale-105 transition-transform duration-300"
-              src={urlFor(post.mainImage).width(400).height(225).url()}
+              className="object-cover transition-transform duration-700 group-hover:scale-[1.04]"
+              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+              src={urlFor(post.mainImage).width(800).height(500).url()}
             />
           </div>
-        </CardHeader>
+        </NextLink>
       )}
 
-      <CardBody className="p-6">
-        <div className="flex flex-col h-full space-y-4">
-          <div>
-            <NextLink href={`/blog/${post.slug.current}`}>
-              <h3 className="text-xl font-bold text-foreground hover:text-primary transition-colors cursor-pointer line-clamp-2">
-                {post.title}
-              </h3>
-            </NextLink>
-
-            <div className="flex items-center gap-3 mt-3 text-sm text-default-500">
-              <div className="flex items-center gap-2">
-                {post.author.image && (
-                  <Image
-                    alt={post.author.name}
-                    className="rounded-full"
-                    height={24}
-                    src={urlFor(post.author.image).width(24).height(24).url()}
-                    width={24}
-                  />
-                )}
-                <span>{post.author.name}</span>
-              </div>
-              <span>•</span>
-              <span>{formattedDate}</span>
-              {post.readingTime && (
-                <>
-                  <span>•</span>
-                  <span>{post.readingTime} min read</span>
-                </>
-              )}
-            </div>
-          </div>
-
-          <p className="text-default-600 line-clamp-3 flex-grow">
-            {post.excerpt}
-          </p>
-
-          <div className="flex flex-wrap gap-2">
-            {post.categories?.slice(0, 2).map((category) => (
-              <Chip
-                key={category.slug.current}
-                className="hover:bg-primary hover:text-primary-foreground transition-colors cursor-pointer"
-                color="primary"
-                size="sm"
-                variant="flat"
-              >
-                {category.title}
-              </Chip>
-            ))}
-            {post.tags?.slice(0, 1).map((tag) => (
-              <Chip
-                key={tag}
-                className="hover:bg-secondary hover:text-secondary-foreground transition-colors cursor-pointer"
-                color="secondary"
-                size="sm"
-                variant="flat"
-              >
-                {tag}
-              </Chip>
-            ))}
-          </div>
+      <div className="flex flex-1 flex-col p-6">
+        <div className="flex flex-wrap items-center gap-x-3 gap-y-1 font-mono text-[0.7rem] uppercase tracking-label text-muted">
+          <time dateTime={post.publishedAt}>{formattedDate}</time>
+          {post.readingTime && (
+            <>
+              <span aria-hidden="true">·</span>
+              <span>{post.readingTime} min read</span>
+            </>
+          )}
         </div>
-      </CardBody>
 
-      <CardFooter className="pt-0 px-6 pb-6">
-        <Link
-          showAnchorIcon
-          as={NextLink}
-          className="text-primary hover:text-primary-600 font-medium"
-          href={`/blog/${post.slug.current}`}
-        >
-          Read more
-        </Link>
-      </CardFooter>
-    </Card>
+        <h3 className="mt-3 text-xl font-semibold leading-snug tracking-tight text-ink">
+          <NextLink
+            className="transition-colors hover:text-accent after:absolute after:inset-0 after:content-['']"
+            href={href}
+          >
+            {post.title}
+          </NextLink>
+        </h3>
+
+        <p className="mt-3 line-clamp-3 flex-1 text-sm leading-relaxed text-muted">
+          {post.excerpt}
+        </p>
+
+        {(post.categories?.length || post.tags?.length) && (
+          <div className="mt-5 flex flex-wrap gap-2">
+            {post.categories?.slice(0, 2).map((category) => (
+              <span key={category.slug.current} className={tag()}>
+                {category.title}
+              </span>
+            ))}
+            {post.tags?.slice(0, 1).map((t) => (
+              <span key={t} className={tag()}>
+                {t}
+              </span>
+            ))}
+          </div>
+        )}
+      </div>
+    </article>
   );
 }

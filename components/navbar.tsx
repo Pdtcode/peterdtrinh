@@ -1,3 +1,5 @@
+"use client";
+
 import {
   Navbar as HeroUINavbar,
   NavbarContent,
@@ -7,86 +9,97 @@ import {
   NavbarItem,
   NavbarMenuItem,
 } from "@heroui/navbar";
-import { Link } from "@heroui/link";
-import { link as linkStyles } from "@heroui/theme";
 import NextLink from "next/link";
-import clsx from "clsx";
 import Image from "next/image";
+import { usePathname } from "next/navigation";
+import { useState } from "react";
+import clsx from "clsx";
 
 import { siteConfig } from "@/config/site";
 import { ThemeSwitch } from "@/components/theme-switch";
-import { GithubIcon, InstagramIcon, HeartFilledIcon } from "@/components/icons";
 
 export const Navbar = () => {
+  const pathname = usePathname();
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+
+  const isActive = (href: string) =>
+    href === "/" ? pathname === "/" : pathname.startsWith(href);
+
   return (
-    <HeroUINavbar maxWidth="xl" position="sticky">
-      <NavbarContent className="basis-1/5 py-8 sm:basis-full" justify="start">
-        <NavbarBrand as="li" className="gap-3 max-w-fit">
-          <NextLink className="flex justify-start items-center gap-1" href="/">
+    <HeroUINavbar
+      classNames={{
+        base: "border-b border-line bg-paper/80 backdrop-blur-md",
+        wrapper: "px-6 sm:px-8 max-w-7xl",
+      }}
+      isMenuOpen={isMenuOpen}
+      maxWidth="xl"
+      position="sticky"
+      onMenuOpenChange={setIsMenuOpen}
+    >
+      <NavbarContent className="basis-auto" justify="start">
+        <NavbarBrand className="max-w-fit">
+          <NextLink
+            className="flex items-center gap-2.5 group"
+            href="/"
+            onClick={() => setIsMenuOpen(false)}
+          >
             <Image
-              alt="PDT Logo"
-              className="rounded"
-              height={60}
+              alt=""
+              className="rounded-md"
+              height={36}
               src="/duck.png"
-              width={60}
+              width={36}
             />
+            <span className="font-display text-lg leading-none text-ink transition-colors group-hover:text-accent">
+              Peter Đ. Trinh
+            </span>
           </NextLink>
         </NavbarBrand>
-        <ul className="hidden lg:flex gap-4 justify-start ml-2">
-          {siteConfig.navItems.map((item) => (
-            <NavbarItem key={item.href}>
+      </NavbarContent>
+
+      <NavbarContent className="hidden lg:flex gap-7" justify="center">
+        {siteConfig.navItems.map((item) => (
+          <NavbarItem key={item.href} isActive={isActive(item.href)}>
+            <NextLink
+              className={clsx(
+                "link-underline font-mono text-xs uppercase tracking-label transition-colors",
+                isActive(item.href)
+                  ? "text-accent"
+                  : "text-muted hover:text-ink",
+              )}
+              href={item.href}
+            >
+              {item.label}
+            </NextLink>
+          </NavbarItem>
+        ))}
+      </NavbarContent>
+
+      <NavbarContent className="basis-auto gap-4" justify="end">
+        <ThemeSwitch />
+
+        <NavbarMenuToggle
+          aria-label={isMenuOpen ? "Close menu" : "Open menu"}
+          className="lg:hidden text-ink"
+        />
+      </NavbarContent>
+
+      <NavbarMenu className="bg-paper/95 backdrop-blur-md pt-8">
+        <div className="flex flex-col gap-1">
+          {siteConfig.navMenuItems.map((item) => (
+            <NavbarMenuItem key={item.href} isActive={isActive(item.href)}>
               <NextLink
                 className={clsx(
-                  linkStyles({ color: "foreground" }),
-                  "data-[active=true]:text-primary data-[active=true]:font-medium",
+                  "block py-2 text-2xl font-semibold tracking-tight transition-colors",
+                  isActive(item.href)
+                    ? "text-accent"
+                    : "text-ink hover:text-accent",
                 )}
-                color="foreground"
                 href={item.href}
+                onClick={() => setIsMenuOpen(false)}
               >
                 {item.label}
               </NextLink>
-            </NavbarItem>
-          ))}
-        </ul>
-      </NavbarContent>
-
-      <NavbarContent
-        className="hidden sm:flex basis-1/5 sm:basis-full"
-        justify="end"
-      >
-        <NavbarItem className="hidden sm:flex gap-4">
-          <Link isExternal aria-label="Github" href={siteConfig.links.github}>
-            <GithubIcon className="text-default-500" />
-          </Link>
-          <Link
-            isExternal
-            aria-label="Instagram"
-            href={siteConfig.links.instagram}
-          >
-            <InstagramIcon className="text-default-500" />
-          </Link>
-          <Link isExternal aria-label="Sponsor" href={siteConfig.links.sponsor}>
-            <HeartFilledIcon className="text-default-500" />
-          </Link>
-          <ThemeSwitch />
-        </NavbarItem>
-      </NavbarContent>
-
-      <NavbarContent className="sm:hidden basis-1 pl-4" justify="end">
-        <Link isExternal aria-label="Github" href={siteConfig.links.github}>
-          <GithubIcon className="text-default-500" />
-        </Link>
-        <ThemeSwitch />
-        <NavbarMenuToggle />
-      </NavbarContent>
-
-      <NavbarMenu>
-        <div className="mx-4 mt-2 flex flex-col gap-2">
-          {siteConfig.navMenuItems.map((item, index) => (
-            <NavbarMenuItem key={`${item.href}-${index}`}>
-              <Link color="foreground" href={item.href} size="lg">
-                {item.label}
-              </Link>
             </NavbarMenuItem>
           ))}
         </div>

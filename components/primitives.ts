@@ -1,53 +1,91 @@
 import { tv } from "tailwind-variants";
 
+/** Page/section headings. Tight, large, ink-colored by default. */
 export const title = tv({
-  base: "tracking-tight inline font-semibold",
+  base: "font-semibold tracking-tight text-balance text-ink",
   variants: {
-    color: {
-      violet: "from-[#FF1CF7] to-[#b249f8]",
-      yellow: "from-[#FF705B] to-[#FFB457]",
-      blue: "from-[#5EA2EF] to-[#0072F5]",
-      cyan: "from-[#00b7fa] to-[#01cfea]",
-      green: "from-[#6FEE8D] to-[#17c964]",
-      pink: "from-[#FF72E1] to-[#F54C7A]",
-      foreground: "from-[#11181C] to-[#687076] dark:from-[#FFFFFF] dark:to-[#4B4B4B]",
-    },
     size: {
-      sm: "text-3xl lg:text-4xl",
-      md: "text-[2.3rem] lg:text-5xl leading-9",
-      lg: "text-4xl lg:text-6xl",
+      sm: "text-2xl sm:text-3xl",
+      md: "text-3xl sm:text-4xl lg:text-5xl",
+      lg: "text-4xl sm:text-5xl lg:text-6xl",
+      xl: "text-5xl sm:text-6xl lg:text-7xl leading-[0.95]",
     },
-    fullWidth: {
-      true: "w-full block",
+    color: {
+      ink: "text-ink",
+      accent: "text-accent",
+      muted: "text-muted",
+    },
+    display: {
+      true: "font-display font-normal",
+    },
+  },
+  defaultVariants: {
+    size: "md",
+    color: "ink",
+  },
+});
+
+/** Supporting copy beneath a title. */
+export const subtitle = tv({
+  base: "text-lg leading-relaxed text-muted text-pretty",
+  variants: {
+    size: {
+      sm: "text-base",
+      md: "text-lg",
+      lg: "text-xl sm:text-2xl",
+    },
+    width: {
+      prose: "max-w-prose",
+      full: "max-w-full",
+    },
+  },
+  defaultVariants: {
+    size: "md",
+    width: "prose",
+  },
+});
+
+/** Consistent page gutter + max width. Every route uses this. */
+export const container = tv({
+  base: "mx-auto w-full px-6 sm:px-8",
+  variants: {
+    width: {
+      narrow: "max-w-3xl",
+      default: "max-w-5xl",
+      wide: "max-w-7xl",
+    },
+  },
+  defaultVariants: {
+    width: "default",
+  },
+});
+
+/** Vertical rhythm for a top-level page section. */
+export const section = tv({
+  base: "py-14 sm:py-20",
+  variants: {
+    size: {
+      sm: "py-10 sm:py-14",
+      md: "py-14 sm:py-20",
+      lg: "py-20 sm:py-28",
     },
   },
   defaultVariants: {
     size: "md",
   },
-  compoundVariants: [
-    {
-      color: [
-        "violet",
-        "yellow",
-        "blue",
-        "cyan",
-        "green",
-        "pink",
-        "foreground",
-      ],
-      class: "bg-clip-text text-transparent bg-gradient-to-b",
-    },
-  ],
 });
 
-export const subtitle = tv({
-  base: "w-full md:w-1/2 my-2 text-lg lg:text-xl text-default-600 block max-w-full",
+/** Bordered surface used for cards across Work / Creative / Writing. */
+export const card = tv({
+  base: "group relative overflow-hidden rounded-xl border border-line bg-surface transition-colors duration-300",
   variants: {
-    fullWidth: {
-      true: "!w-full",
+    interactive: {
+      true: "hover:border-accent/50",
     },
   },
-  defaultVariants: {
-    fullWidth: true,
-  },
+});
+
+/** Small metadata pill (tech tags, categories). */
+export const tag = tv({
+  base: "inline-flex items-center rounded-full border border-line px-2.5 py-0.5 font-mono text-[0.7rem] uppercase tracking-label text-muted",
 });

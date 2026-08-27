@@ -1,238 +1,202 @@
-import { Button } from "@heroui/button";
-import { Card, CardBody } from "@heroui/card";
-import { Chip } from "@heroui/chip";
-import Image from "next/image";
+import type { Metadata } from "next";
 
-import { title, subtitle } from "@/components/primitives";
+import Image from "next/image";
+import { notFound } from "next/navigation";
+import clsx from "clsx";
+
+import { title, subtitle, container, section } from "@/components/primitives";
+import { photos, videos, services } from "@/config/creative";
+import { features, siteConfig } from "@/config/site";
+
+export const metadata: Metadata = {
+  title: "Creative",
+  description:
+    "Photography and videography by Peter Trinh: commercial, event, and portrait work in Oklahoma City.",
+  alternates: { canonical: "/creative" },
+  // Keep it out of search results while the page is hidden.
+  robots: features.creative ? undefined : { index: false, follow: false },
+};
+
+const spanClass = {
+  normal: "row-span-1",
+  tall: "row-span-2",
+  wide: "sm:col-span-2",
+} as const;
+
+function EmptyState({ label, note }: { label: string; note: string }) {
+  return (
+    <div className="rounded-xl border border-dashed border-line px-8 py-14 text-center">
+      <p className="eyebrow">{label}</p>
+      <p className="mx-auto mt-3 max-w-md text-sm leading-relaxed text-muted">
+        {note}
+      </p>
+      <a
+        className="mt-6 inline-block font-mono text-xs uppercase tracking-label text-accent hover:underline"
+        href={`mailto:${siteConfig.email}`}
+      >
+        Ask to see the portfolio
+      </a>
+    </div>
+  );
+}
 
 export default function CreativePage() {
-  const photographyProjects = [
-    {
-      id: 1,
-      title: "Urban Landscapes",
-      description: "Capturing the beauty of city architecture and street life",
-      image: "/api/placeholder/400/600",
-      category: "Architecture",
-      tags: ["Urban", "Street", "Architecture"],
-    },
-    {
-      id: 2,
-      title: "Portrait Series",
-      description: "Intimate portraits showcasing human emotion and connection",
-      image: "/api/placeholder/600/400",
-      category: "Portraits",
-      tags: ["People", "Emotion", "Studio"],
-    },
-    {
-      id: 3,
-      title: "Nature's Details",
-      description: "Macro photography revealing the intricate beauty of nature",
-      image: "/api/placeholder/400/600",
-      category: "Nature",
-      tags: ["Macro", "Nature", "Details"],
-    },
-    {
-      id: 4,
-      title: "Event Coverage",
-      description: "Professional event photography with candid moments",
-      image: "/api/placeholder/600/400",
-      category: "Events",
-      tags: ["Events", "Candid", "Professional"],
-    },
-  ];
-
-  const videographyProjects = [
-    {
-      id: 1,
-      title: "Brand Commercial",
-      description: "30-second commercial showcasing product innovation",
-      thumbnail: "/api/placeholder/600/400",
-      duration: "0:30",
-      category: "Commercial",
-      tags: ["Branding", "Product", "Commercial"],
-    },
-    {
-      id: 2,
-      title: "Wedding Highlight Reel",
-      description: "Cinematic wedding film capturing the couple's special day",
-      thumbnail: "/api/placeholder/600/400",
-      duration: "3:45",
-      category: "Wedding",
-      tags: ["Wedding", "Cinematic", "Love"],
-    },
-    {
-      id: 3,
-      title: "Corporate Interview",
-      description: "Professional interview setup with executive leadership",
-      thumbnail: "/api/placeholder/600/400",
-      duration: "12:30",
-      category: "Corporate",
-      tags: ["Interview", "Corporate", "Professional"],
-    },
-    {
-      id: 4,
-      title: "Music Video",
-      description: "Creative music video with dynamic storytelling",
-      thumbnail: "/api/placeholder/600/400",
-      duration: "4:15",
-      category: "Music",
-      tags: ["Music", "Creative", "Storytelling"],
-    },
-  ];
+  // Hidden until there is work in config/creative.ts. Flip features.creative
+  // in config/site.ts to bring the page back.
+  if (!features.creative) notFound();
 
   return (
-    <div className="max-w-7xl mx-auto py-8 space-y-16">
-      {/* Hero Section */}
-      <div className="text-center space-y-4">
-        <h1 className={title({ size: "lg", color: "foreground" })}>
-          Creative Portfolio
+    <>
+      <header className={container({ width: "wide", class: "pt-16 sm:pt-20" })}>
+        <p className="eyebrow">Photography &amp; video</p>
+        <h1 className={title({ size: "lg", class: "mt-5 max-w-3xl" })}>
+          Stills and motion out of Oklahoma City.
         </h1>
-        <p className={subtitle()}>
-          Visual storytelling through photography and videography
+        <p className={subtitle({ size: "lg", class: "mt-6" })}>
+          I shoot commercial, event, and portrait work, and cut the video that
+          goes with it. Most of it ends up on the sites I build.
         </p>
-      </div>
+      </header>
 
-      {/* Photography Section */}
-      <section className="space-y-8">
-        <div className="text-center">
-          <h2 className={title({ size: "md", color: "blue" })}>Photography</h2>
-          <p className="text-default-600 mt-2 max-w-2xl mx-auto">
-            Capturing moments, emotions, and the beauty in everyday life through
-            the lens
+      {/* Photography */}
+      <section className={container({ width: "wide", class: section() })}>
+        <div className="flex items-end justify-between border-b border-line pb-4">
+          <h2 className={title({ size: "sm" })}>Photography</h2>
+          <p className="font-mono text-xs uppercase tracking-label text-muted">
+            {photos.length > 0 ? `${photos.length} frames` : "In progress"}
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {photographyProjects.map((project) => (
-            <Card
-              key={project.id}
-              className="group hover:scale-105 transition-transform duration-300"
-            >
-              <CardBody className="p-0">
-                <div className="relative aspect-[4/3] overflow-hidden rounded-t-lg">
+        <div className="mt-10">
+          {photos.length > 0 ? (
+            <div className="grid auto-rows-[16rem] grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+              {photos.map((photo) => (
+                <figure
+                  key={photo.src}
+                  className={clsx(
+                    "group relative overflow-hidden rounded-lg border border-line bg-surface",
+                    spanClass[photo.span ?? "normal"],
+                  )}
+                >
                   <Image
                     fill
-                    alt={project.title}
-                    className="object-cover group-hover:scale-110 transition-transform duration-500"
-                    sizes="(max-width: 768px) 100vw, 50vw"
-                    src={project.image}
+                    alt={photo.alt}
+                    className="object-cover transition-transform duration-700 group-hover:scale-105"
+                    sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                    src={photo.src}
                   />
-                </div>
-                <div className="p-6 space-y-3">
-                  <div className="flex justify-between items-start">
-                    <h3 className="text-xl font-semibold">{project.title}</h3>
-                    <Chip color="primary" size="sm" variant="flat">
-                      {project.category}
-                    </Chip>
+                  {photo.caption && (
+                    <figcaption className="absolute inset-x-0 bottom-0 translate-y-full bg-gradient-to-t from-black/80 to-transparent p-4 font-mono text-xs text-white transition-transform duration-300 group-hover:translate-y-0">
+                      {photo.caption}
+                    </figcaption>
+                  )}
+                </figure>
+              ))}
+            </div>
+          ) : (
+            <EmptyState
+              label="Gallery being assembled"
+              note="I'm putting together a proper selection of recent frames. In the meantime, reach out and I'll send work relevant to what you need."
+            />
+          )}
+        </div>
+      </section>
+
+      {/* Video */}
+      <section className={container({ width: "wide", class: section() })}>
+        <div className="flex items-end justify-between border-b border-line pb-4">
+          <h2 className={title({ size: "sm" })}>Video</h2>
+          <p className="font-mono text-xs uppercase tracking-label text-muted">
+            {videos.length > 0 ? `${videos.length} pieces` : "In progress"}
+          </p>
+        </div>
+
+        <div className="mt-10">
+          {videos.length > 0 ? (
+            <div className="grid gap-8 md:grid-cols-2">
+              {videos.map((video) => (
+                <article
+                  key={video.embed}
+                  className="overflow-hidden rounded-xl border border-line bg-surface"
+                >
+                  <div className="aspect-video bg-paper">
+                    <iframe
+                      allowFullScreen
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                      className="h-full w-full"
+                      loading="lazy"
+                      src={video.embed}
+                      title={video.title}
+                    />
                   </div>
-                  <p className="text-default-600">{project.description}</p>
-                  <div className="flex flex-wrap gap-2">
-                    {project.tags.map((tag) => (
-                      <Chip key={tag} size="sm" variant="bordered">
-                        {tag}
-                      </Chip>
-                    ))}
+                  <div className="p-6">
+                    <h3 className="text-lg font-semibold tracking-tight text-ink">
+                      {video.title}
+                    </h3>
+                    {video.description && (
+                      <p className="mt-2 text-sm leading-relaxed text-muted">
+                        {video.description}
+                      </p>
+                    )}
                   </div>
-                  <Button
-                    className="w-full mt-4"
-                    color="primary"
-                    variant="light"
-                  >
-                    View Gallery
-                  </Button>
-                </div>
-              </CardBody>
-            </Card>
+                </article>
+              ))}
+            </div>
+          ) : (
+            <EmptyState
+              label="Reel in the edit"
+              note="Recent video work is still being cut together. Get in touch if you'd like to see raw examples of brand spots or event coverage."
+            />
+          )}
+        </div>
+      </section>
+
+      {/* Services */}
+      <section className={container({ width: "wide", class: section() })}>
+        <div className="border-b border-line pb-4">
+          <h2 className={title({ size: "sm" })}>What I shoot</h2>
+        </div>
+
+        <div className="mt-10 grid gap-px overflow-hidden rounded-xl border border-line bg-line sm:grid-cols-2">
+          {services.map((service) => (
+            <div key={service.heading} className="bg-surface p-8">
+              <h3 className="font-mono text-xs uppercase tracking-label text-accent">
+                {service.heading}
+              </h3>
+              <p className="mt-3 text-sm leading-relaxed text-muted">
+                {service.body}
+              </p>
+            </div>
           ))}
         </div>
       </section>
 
-      {/* Videography Section */}
-      <section className="space-y-8">
-        <div className="text-center">
-          <h2 className={title({ size: "md", color: "cyan" })}>Videography</h2>
-          <p className="text-default-600 mt-2 max-w-2xl mx-auto">
-            Bringing stories to life through motion, sound, and cinematic vision
+      {/* CTA */}
+      <section className={container({ width: "wide", class: "pb-24" })}>
+        <div className="rounded-2xl border border-line bg-surface p-10 text-center sm:p-14">
+          <h2 className={title({ size: "sm" })}>Need something shot?</h2>
+          <p className={subtitle({ class: "mx-auto mt-4" })}>
+            Tell me the date, the location, and what you&apos;re after.
+            I&apos;ll come back with availability and a quote.
           </p>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {videographyProjects.map((project) => (
-            <Card
-              key={project.id}
-              className="group hover:scale-105 transition-transform duration-300"
+          <div className="mt-8 flex flex-wrap justify-center gap-3">
+            <a
+              className="rounded-full bg-ink px-6 py-3 font-mono text-xs uppercase tracking-label text-paper transition-opacity hover:opacity-85"
+              href={`mailto:${siteConfig.email}`}
             >
-              <CardBody className="p-0">
-                <div className="relative aspect-video overflow-hidden rounded-t-lg">
-                  <Image
-                    fill
-                    alt={project.title}
-                    className="object-cover group-hover:scale-110 transition-transform duration-500"
-                    sizes="(max-width: 768px) 100vw, 50vw"
-                    src={project.thumbnail}
-                  />
-                  <div className="absolute inset-0 bg-black/20 group-hover:bg-black/40 transition-colors duration-300 flex items-center justify-center">
-                    <div className="w-16 h-16 rounded-full bg-white/90 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-                      <svg
-                        className="w-6 h-6 text-black ml-1"
-                        fill="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path d="M8 5v14l11-7z" />
-                      </svg>
-                    </div>
-                  </div>
-                  <div className="absolute bottom-4 right-4 bg-black/70 text-white px-2 py-1 rounded text-sm">
-                    {project.duration}
-                  </div>
-                </div>
-                <div className="p-6 space-y-3">
-                  <div className="flex justify-between items-start">
-                    <h3 className="text-xl font-semibold">{project.title}</h3>
-                    <Chip color="secondary" size="sm" variant="flat">
-                      {project.category}
-                    </Chip>
-                  </div>
-                  <p className="text-default-600">{project.description}</p>
-                  <div className="flex flex-wrap gap-2">
-                    {project.tags.map((tag) => (
-                      <Chip key={tag} size="sm" variant="bordered">
-                        {tag}
-                      </Chip>
-                    ))}
-                  </div>
-                  <Button
-                    className="w-full mt-4"
-                    color="secondary"
-                    variant="light"
-                  >
-                    Watch Video
-                  </Button>
-                </div>
-              </CardBody>
-            </Card>
-          ))}
+              Email me
+            </a>
+            <a
+              className="rounded-full border border-line px-6 py-3 font-mono text-xs uppercase tracking-label text-ink transition-colors hover:border-accent hover:text-accent"
+              href={siteConfig.links.instagram}
+              rel="noreferrer"
+              target="_blank"
+            >
+              More on Instagram
+            </a>
+          </div>
         </div>
       </section>
-
-      {/* Contact Section */}
-      <section className="text-center space-y-6 py-12 px-6 bg-default-50 rounded-2xl">
-        <h2 className={title({ size: "md", color: "green" })}>
-          Let&apos;s Create Together
-        </h2>
-        <p className="text-default-600 max-w-2xl mx-auto">
-          Ready to bring your vision to life? Get in touch to discuss your
-          photography or videography project.
-        </p>
-        <div className="flex flex-col sm:flex-row gap-4 justify-center">
-          <Button color="primary" size="lg">
-            Start a Project
-          </Button>
-          <Button size="lg" variant="bordered">
-            View Full Portfolio
-          </Button>
-        </div>
-      </section>
-    </div>
+    </>
   );
 }

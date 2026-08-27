@@ -2,40 +2,90 @@
 @tailwind components;
 @tailwind utilities;
 
-@font-face {
-    font-family: 'Rock';
-    src: url('https://fonts.googleapis.com/css2?family=Rock+Salt&display=swap') format('truetype');
-    font-weight: normal;
-    font-style: normal;
+/*
+ * Color tokens as raw RGB channels so Tailwind's `<alpha-value>` works.
+ * Keep these in sync with the `palette` object in tailwind.config.js.
+ */
+@layer base {
+  :root {
+    --c-paper: 250 249 246;
+    --c-surface: 255 255 255;
+    --c-ink: 18 16 14;
+    --c-muted: 107 101 96;
+    --c-line: 229 225 218;
+    --c-accent: 132 22 23;
   }
 
-/* Raining Cards Animation */
-@keyframes rain-cards {
+  .dark {
+    --c-paper: 12 11 10;
+    --c-surface: 21 19 18;
+    --c-ink: 245 242 236;
+    --c-muted: 148 140 131;
+    --c-line: 38 35 33;
+    --c-accent: 227 71 74;
+  }
+
+  html {
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  body {
+    @apply bg-paper text-ink;
+  }
+
+  ::selection {
+    @apply bg-accent text-white;
+  }
+
+  :focus-visible {
+    @apply outline-none ring-2 ring-accent ring-offset-2 ring-offset-paper;
+  }
+}
+
+@layer components {
+  /* Small uppercase mono label used to head sections. */
+  .eyebrow {
+    @apply font-mono text-[0.7rem] uppercase tracking-label text-muted;
+  }
+
+  /* Underline that draws in on hover, used for inline/nav links. */
+  .link-underline {
+    @apply relative inline-block;
+  }
+  .link-underline::after {
+    @apply absolute bottom-0 left-0 h-px w-0 bg-current transition-[width] duration-300 ease-out content-[''];
+  }
+  .link-underline:hover::after {
+    @apply w-full;
+  }
+}
+
+/* Falling-cards animation used on the About page. */
+@keyframes fall {
   0% {
-    transform: translateY(0px) rotateZ(0deg);
+    transform: translateY(-120px) rotate(0deg);
     opacity: 0;
   }
-  5% {
-    opacity: 1;
+  10% {
+    opacity: 0.18;
   }
-  95% {
-    opacity: 1;
+  90% {
+    opacity: 0.18;
   }
   100% {
-    transform: translateY(2000px) rotateZ(180deg);
+    transform: translateY(calc(100vh + 120px)) rotate(360deg);
     opacity: 0;
   }
 }
 
-@keyframes sway {
-  0%, 100% {
-    transform: translateX(0px);
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
   }
-  50% {
-    transform: translateX(30px);
-  }
-}
-
-.animate-rain-cards {
-  animation: rain-cards linear infinite, sway ease-in-out infinite;
 }
