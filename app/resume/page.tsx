@@ -140,16 +140,16 @@ export default function ResumePage() {
         </div>
       </section>
 
-      {/* Education */}
+      {/* Education & certifications */}
       <section className={container({ width: "default", class: section() })}>
         <h2
           className={title({ size: "sm", class: "border-b border-line pb-4" })}
         >
-          Education
+          Education &amp; certifications
         </h2>
 
         <div className="mt-10 space-y-8">
-          {resume.education.map((entry) => (
+          {[...resume.education, ...resume.certifications].map((entry) => (
             <article
               key={entry.credential}
               className="grid gap-4 sm:grid-cols-[10rem_1fr] sm:gap-8"

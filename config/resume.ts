@@ -58,6 +58,15 @@ export const resume = {
     },
   ],
 
+  certifications: [
+    {
+      credential: "CompTIA Security+",
+      org: "CompTIA",
+      period: "",
+      note: "",
+    },
+  ],
+
   skills: [
     {
       heading: "Software Development",
@@ -86,6 +95,7 @@ export const resume = {
         "Sanity CMS",
         "Data Analysis & Reporting",
         "Statistical Analysis",
+        "Security Fundamentals (CompTIA Security+)",
       ],
     },
     {
