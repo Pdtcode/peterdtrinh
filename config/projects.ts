@@ -14,6 +14,11 @@ export interface Project {
   note?: string;
   /** Feature on the home page. */
   featured?: boolean;
+  /**
+   * Bump to force screenshotmachine to recapture the thumbnail. Its cache is
+   * keyed on the URL, so a changed query string skips the stale capture.
+   */
+  previewVersion?: number;
 }
 
 export const projects: Project[] = [
@@ -42,7 +47,7 @@ export const projects: Project[] = [
     description:
       "A full e-commerce platform for an Oklahoma apparel brand. Stripe-powered checkout on a relational data model covering inventory, products, orders, and discount codes, exposed through a Sanity headless CMS so the client runs the store without me. Includes an event-driven product drop page for timed releases.",
     url: "https://gsdesignresearch.com",
-    note: "The live site is password protected at the moment while the team gets a new release ready for their community.",
+    previewVersion: 2,
     technologies: [
       "Next.js",
       "TypeScript",
@@ -70,10 +75,12 @@ export const projects: Project[] = [
  * environment so it is not committed; without it the cards fall back to a
  * typographic placeholder.
  */
-export function previewUrl(url: string): string | null {
+export function previewUrl(url: string, version?: number): string | null {
   const key = process.env.NEXT_PUBLIC_SCREENSHOT_KEY;
 
   if (!key) return null;
+
+  if (version) url = `${url}?v=${version}`;
 
   return `https://api.screenshotmachine.com?key=${key}&url=${encodeURIComponent(
     url,

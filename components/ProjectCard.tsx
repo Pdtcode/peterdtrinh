@@ -9,7 +9,7 @@ interface ProjectCardProps {
 }
 
 export default function ProjectCard({ project }: ProjectCardProps) {
-  const preview = previewUrl(project.url);
+  const preview = previewUrl(project.url, project.previewVersion);
 
   return (
     <article className={card({ interactive: true })}>
