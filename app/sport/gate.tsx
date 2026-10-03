@@ -67,6 +67,8 @@ export default function SportGate() {
               Password
             </label>
             <input
+              // eslint-disable-next-line jsx-a11y/no-autofocus
+              autoFocus
               autoComplete="current-password"
               className="mt-2 w-full rounded-lg border border-line bg-surface px-4 py-3 text-base text-ink outline-none transition-colors focus:border-accent"
               id="sport-password"
@@ -89,7 +91,7 @@ export default function SportGate() {
           </button>
 
           {message ? (
-            <p aria-live="polite" className="text-sm text-muted">
+            <p className="text-sm text-accent" role="alert">
               {message}
             </p>
           ) : null}
